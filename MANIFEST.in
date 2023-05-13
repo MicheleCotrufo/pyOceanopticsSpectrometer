@@ -1,2 +1,2 @@
-include pyThorlabsAPT/graphics/*
-include pyThorlabsAPT/thorlabs_apt/*
+include pyOceanopticsSpectrometer/graphics/*
+include pyOceanopticsSpectrometer/*.json

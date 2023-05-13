@@ -854,7 +854,7 @@ def main():
     Interface = interface(app=app,virtual=virtual) 
     Interface.verbose = not(args.decrease_verbose)
     app.aboutToQuit.connect(Interface.close)  
-    view = gui(interface = Interface, parent=window, is_main_window = False, plot=True) #is_main_window = True tells the GUI that it is not contained inside another window
+    view = gui(interface = Interface, parent=window, is_main_window = True, plot=True) #is_main_window = True tells the GUI that it is not contained inside another window
     window.show()
     app.exec()# Start the event loop.
 

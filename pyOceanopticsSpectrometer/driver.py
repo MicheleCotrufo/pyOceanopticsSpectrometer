@@ -1,3 +1,4 @@
+import seabreeze
 from seabreeze.spectrometers import Spectrometer, list_devices
 
 class OceanopticsSpectrometer:
@@ -11,6 +12,11 @@ class OceanopticsSpectrometer:
         self._integration_time_microseconds = 100000 #default value, 100ms
         self._integration_time_limits_microseconds = None
         self.does_device_have_TEC = False 
+        
+    def set_backend(self,backend):
+        if backend not in ['cseabreeze', 'pyseabreeze']: 
+            raise RuntimeError("Backend name not valid. Possible values are cseabreeze and pyseabreeze")
+        seabreeze.use(backend)
         
     def list_devices(self):
         '''

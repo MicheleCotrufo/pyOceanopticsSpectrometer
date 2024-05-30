@@ -114,7 +114,8 @@ class interface(abstract_instrument_interface.abstract_interface):
         self.output = {}
         ### Default values of settings (might be overwritten by settings saved in .json files later)
         #Note: for this instrument the settings 'refresh_time' and 'integration_time' are actually the same (and their value is always identicaly). The setting 'refresh_time' is kept for legacy reasons
-        self.settings = {   'refresh_time' : 0.1, #in seconds
+        self.settings = {   'backend' : 'pyseabreeze',
+                            'refresh_time' : 0.1, #in seconds
                             'integration_time' : 0.1, #in seconds
                             'folder_save_data' : '',
                             'autosave': 'disabled'}
@@ -132,6 +133,7 @@ class interface(abstract_instrument_interface.abstract_interface):
         ###
         super().__init__(**kwargs) #Here is when settings from .json file are loaded
         ###
+        self.instrument.set_backend(self.settings['backend'])
         self.refresh_list_devices() 
 
 ############################################################

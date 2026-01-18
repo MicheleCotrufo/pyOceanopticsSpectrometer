@@ -31,7 +31,13 @@ Use the package manager pip to install,
 ```bash
 pip install pyOceanopticsSpectrometer
 ```
-The package ```python-seabreeze``` uses two different backends (`cseabreeze` and `pyseabreeze (usb)`), and some devices are compatible with only one backend (see table in readme file of [python-seabreeze](https://github.com/ap--/python-seabreeze)). By default, ```pyOceanopticsSpectrometer``` uses the backend `pyseabreeze (usb)`, which is referred to as just `pyseabreeze` in the code. To change this to  `cseabreeze`, after installation, go to the directory which contains the code of ```pyOceanopticsSpectrometer```, open the file `config.json`, and change the value of "backend" from `pyseabreeze` to `cseabreeze`.
+This will install all required libraries, included ```seabreeze```. To finalize the installation of ```seabreeze```, additional steps are required (see also instructions in [python-seabreeze](https://github.com/ap--/python-seabreeze)):
+- Run the command `seabreeze_os_setup` in any terminal
+- Install ```pip install pyusb```
+- Install ```pip install libusb```
+- If you run into errors when running the application,  you might need to manually install libusb1. Go [here](https://libusb.info/), Downloads -> Latest Windows Binaries. In the zip file, enter either the folder MinGW64/dll or MinGW32/dll (depending on your OS). Copy the file `libusb-1.0.dll` into `C:\Windows\System32`.
+  
+The package ```seabreeze``` uses two different backends (`cseabreeze` and `pyseabreeze (usb)`), and some devices are compatible with only one of them (see table in readme file of [python-seabreeze](https://github.com/ap--/python-seabreeze)). By default, ```pyOceanopticsSpectrometer``` uses the backend `pyseabreeze (usb)`, which is referred to as just `pyseabreeze` in the code. To change this to  `cseabreeze`, after installation, go to the directory which contains the code of ```pyOceanopticsSpectrometer```, open the file `config.json`, and change the value of "backend" from `pyseabreeze` to `cseabreeze`.
 
 
  <!---

@@ -115,8 +115,10 @@ class interface(abstract_instrument_interface.abstract_interface):
         ### Default values of settings (might be overwritten by settings saved in .json files later)
         #Note: for this instrument the settings 'refresh_time' and 'integration_time' are actually the same (and their value is always identicaly). The setting 'refresh_time' is kept for legacy reasons
         self.settings = {   'backend' : 'pyseabreeze',
-                            'refresh_time' : 0.1, #in seconds
-                            'integration_time' : 0.1, #in seconds
+                            'refresh_time' : 0.1,   #in seconds. NOTE: 'refresh_time' is always equal to 'integration_time' (see code). We keep to variable names to ensure compatibility
+                                                    #with other scripts
+                            'integration_time' : 0.1,  #in seconds. NOTE: in the current implementation, the value of 'integration_time' set either here or in the config.json file is 
+                                                       #always overwritten by the default value defined in the driver. In the future this will be fixed.
                             'folder_save_data' : '',
                             'autosave': 'disabled'}
         
@@ -227,24 +229,9 @@ class interface(abstract_instrument_interface.abstract_interface):
 
     def set_refresh_time(self, refresh_time):
         self.set_integration_time(self, refresh_time)
-        # try: 
-        #     refresh_time = float(refresh_time)
-        #     if self.settings['refresh_time'] == refresh_time: #in this case the number in the refresh time edit box is the same as the refresh time currently stored
-        #         return True
-        # except ValueError:
-        #     self.logger.error(f"The refresh time must be a valid float number.")
-        #     self.sig_refreshtime.emit(self.settings['refresh_time'])
-        #     return False
-        # if refresh_time < 0.001:
-        #     self.logger.error(f"The refresh time must be positive and >= 1ms.")
-        #     self.sig_refreshtime.emit(self.settings['refresh_time'])
-        #     return False
-        # self.logger.info(f"The refresh time is now {refresh_time} s.")
-        # self.settings['refresh_time'] = refresh_time
-        # self.sig_refreshtime.emit(self.settings['refresh_time'])
-        # return True
 
-    def set_integration_time(self, int_time):
+    def set_integration_time(self, int_time:float):
+        # int_time is in seconds
         try: 
             int_time = float(int_time)
         except ValueError:
@@ -254,9 +241,11 @@ class interface(abstract_instrument_interface.abstract_interface):
         try:
             self.logger.info(f"Setting the integration time to {int_time}s for the device {self.connected_device_name}...")
             self.instrument.integration_time_microseconds = int(int_time*1e6)
-            self.settings['integration_time'] = self.instrument.integration_time_microseconds
+            self.settings['integration_time'] = self.instrument.integration_time_microseconds/1e6
             self.settings['refresh_time'] = self.settings['integration_time']
-            self.logger.info(f"Integration time set to {self.settings['integration_time']}.")
+            self.sig_integrationtime.emit(self.settings['integration_time'])    
+            self.sig_refreshtime.emit(self.settings['refresh_time'])
+            self.logger.info(f"Integration time set to {self.settings['integration_time']} s.")
         except Exception as e:
             self.logger.error(f"An error occurred while setting the integration time: {e}")
             self.read_integration_time()
@@ -267,7 +256,7 @@ class interface(abstract_instrument_interface.abstract_interface):
             self.logger.info(f"Reading the integration time from the driver of the device {self.connected_device_name}...")
             self.settings['integration_time'] = self.instrument.integration_time_microseconds/1e6
             self.settings['refresh_time'] = self.settings['integration_time']
-            self.logger.info(f"Current integration is {self.settings['integration_time']}s.")
+            self.logger.info(f"Current integration time is {self.settings['integration_time']} s.")
         except Exception as e:
             self.logger.error(f"An error occurred while reading the integration time: {e}")
         self.sig_integrationtime.emit(self.settings['integration_time'])    

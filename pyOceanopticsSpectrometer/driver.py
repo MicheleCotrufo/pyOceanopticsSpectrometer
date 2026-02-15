@@ -9,7 +9,8 @@ class OceanopticsSpectrometer:
         self._wavelengths = None
         self._intensities = None
         self.device = None # Spectrometer object describing the device currently coonected
-        self._integration_time_microseconds = 100000 #default value, 100ms
+        #Note: the seabreeze APIs  do not allow "reading" the current integration time from the device. Thus, we need to store it into a local a variable
+        self._integration_time_microseconds = 100000 #default value
         self._integration_time_limits_microseconds = None
         self.does_device_have_TEC = False 
         
@@ -137,16 +138,17 @@ class OceanopticsSpectrometer:
         return self._integration_time_microseconds
 
     @integration_time_microseconds.setter
-    def integration_time_microseconds(self,time):
+    def integration_time_microseconds(self,time:int):
+        #time is in microseconds
         self.check_valid_connection()
         try:
             time = int(time)
         except:
-            raise TypeError("Integration time must be a valid integer number")
+            raise TypeError("Integration time must be a valid integer number.")
         if time <=0:
-            raise TypeError("Integration time must be a positive integer number")
+            raise TypeError("Integration time must be a positive integer.")
         if (time < self._integration_time_limits_microseconds[0]) or (time > self._integration_time_limits_microseconds[1]):
-            raise TypeError(f"Integration time must be between {self._integration_time_limits_microseconds[0]} and {self._integration_time_limits_microseconds[1]}")
+            raise TypeError(f"Integration time must be between {self._integration_time_limits_microseconds[0]/1000} ms and {self._integration_time_limits_microseconds[1]/1000} ms")
         self.device.integration_time_micros(time)
         self._integration_time_microseconds = time
         return self._integration_time_microseconds

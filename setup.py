@@ -9,7 +9,7 @@ with open("requirements.txt") as f:
     required_packages = f.read().splitlines()
 
 setuptools.setup(name='pyOceanopticsSpectrometer',
-      version='0.4',
+      version='0.5rc1',
       description='A python library/GUI to access and control OceanOptics spectrometers',
       long_description=long_description,
       long_description_content_type='text/markdown',
